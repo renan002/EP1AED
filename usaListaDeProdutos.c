@@ -23,11 +23,11 @@ int main() {
   if(res) printf("Insercao retornou true (4)\n");
   else printf("Insercao retornou false (2)\n");
   exibirLog(f);
-  res = inserirNovoProduto(f, 5, 4, 1, 3);
+  res = inserirNovoProduto(f, 5, 4, 11, 3);
   if(res) printf("Insercao retornou true (4)\n");
   else printf("Insercao retornou false (2)\n");
   exibirLog(f);
-  res = inserirNovoProduto(f, 6, 7, 1, 7);
+  res = inserirNovoProduto(f, 6, 7, 10, 7);
   if(res) printf("Insercao retornou true (4)\n");
   else printf("Insercao retornou false (3)\n");
   exibirLog(f);
@@ -113,7 +113,6 @@ int main() {
   else printf("Atualizacao retornou false (3)\n");
   exibirLog(f);
 
-
   res = atualizarValorDoProduto(f, 6, 0);
   if(res) printf("Atualizacao retornou true (4)\n");
   else printf("Atualizacao retornou false (4)\n");
@@ -129,8 +128,6 @@ int main() {
   else printf("Atualizacao retornou false (6)\n");
   exibirLog(f);
 
- 
-
   res = atualizarValorDoProduto(f, 6, 3);
   if(res) printf("Atualizacao retornou true (7)\n");
   else printf("Atualizacao retornou false (7)\n");
@@ -145,9 +142,6 @@ int main() {
   if(res) printf("Atualizacao retornou true (9)\n");
   else printf("Atualizacao retornou false (9)\n");
   exibirLog(f);
-
-
-
 
   return 0;
 }

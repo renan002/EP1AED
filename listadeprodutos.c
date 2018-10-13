@@ -66,17 +66,46 @@ PONT valorEntre(PLISTA l, int qttTotal){
 	if(qttTotal >= atual->quantidade*atual->valorUnitario) return atual;
 	
 }
-
 PONT pegaAnterior(PLISTA l, int id){
 	PONT atual = l->cabeca->proxProd;
-	PONT esse;
-   while (atual) {
-    if (atual->id == id) return esse;
-    esse=atual;
-    atual = atual->proxProd;
-  }
-  return NULL;
-	
+	PONT esse = l->cabeca;
+	while (atual) {
+		if (atual->id == id) return esse;
+		esse=atual;
+		atual = atual->proxProd;
+	}
+	return NULL;
+
+}
+
+void organizarLista(PLISTA l){
+
+	int tam = tamanho(l);
+
+	int totalAtual, totalProxProd,i;
+
+	for(i=0;i<tam;i++){
+		PONT atual = l->cabeca->proxProd;
+		while (atual->proxProd) {
+			totalAtual=atual->quantidade*atual->valorUnitario;
+			totalProxProd=atual->proxProd->quantidade*atual->proxProd->valorUnitario;
+
+			if(totalAtual>=totalProxProd){
+
+			PONT ant = pegaAnterior(l,atual->id);
+
+			PONT aux=atual->proxProd->proxProd;
+
+			ant->proxProd=atual->proxProd;
+			atual->proxProd->proxProd=atual;
+			atual->proxProd=aux;
+
+			}
+			if(atual->proxProd)
+			atual=atual->proxProd;
+		}
+	}
+
 }
 
 bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
@@ -84,7 +113,6 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
 	PONT atual = l->cabeca;
 	PONT nLista = (PONT) malloc(sizeof(REGISTRO));
 	if(atual->proxProd==NULL){
-		printf("Igual a NULL");
 		atual->proxProd = nLista;
 	  	nLista->id=id;
 	  	nLista->quantidade=quantidade;
@@ -94,55 +122,51 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
 	  	return true;
 	}
 	while(atual->proxProd){
-		
+
 		if(quantidade*valor < atual->proxProd->quantidade*atual->proxProd->valorUnitario){
 			if(atual->proxProd->proxProd==NULL){
-			printf("[%i] < [%i] ([%i] * [%i]) ", quantidade*valor, atual->proxProd->quantidade*atual->proxProd->valorUnitario, atual->proxProd->quantidade,atual->proxProd->valorUnitario);
-			
+
 			nLista->id=id;
 			nLista->quantidade=quantidade;
 			nLista->tipo=tipo;
 			nLista->valorUnitario=valor;
-			
+
 			PONT aux1 = atual->proxProd;
-			
+
 		    atual->proxProd=nLista;
 		    nLista->proxProd=aux1;
-		    
+
 		    return true;
 		}else{
-			printf("[%i] < [%i] ([%i] * [%i]) ", quantidade*valor, atual->proxProd->quantidade*atual->proxProd->valorUnitario, atual->proxProd->quantidade,atual->proxProd->valorUnitario);
-			
+
 			nLista->id=id;
 			nLista->quantidade=quantidade;
 			nLista->tipo=tipo;
 			nLista->valorUnitario=valor;
-			
+
 			PONT aux=atual->proxProd;
-			
+
 			atual->proxProd=nLista;
 			nLista->proxProd=aux;
-			
-			
+
+
 			return true;
 			}
 		}else if(quantidade*valor > atual->proxProd->quantidade*atual->proxProd->valorUnitario){
-			
-		  	printf("[%i] > [%i] ([%i] * [%i]) ", quantidade*valor, atual->proxProd->quantidade*atual->proxProd->valorUnitario, atual->proxProd->quantidade,atual->proxProd->valorUnitario);
-		  	
+
 		  	PONT aux = valorEntre(l,quantidade*valor);
-		  	
+
 			nLista->id=id;
 			nLista->quantidade=quantidade;
 			nLista->tipo=tipo;
-			nLista->valorUnitario=valor;  	
-				
+			nLista->valorUnitario=valor;
+
 			PONT ajuda = aux->proxProd;
-			
+
 			aux->proxProd=nLista;
 			nLista->proxProd=ajuda;
-				
-			return true;	
+
+			return true;
 		}
 		atual=atual->proxProd;
 	}
@@ -151,31 +175,38 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
 
 bool removerItensDeUmProduto(PLISTA l, int id, int quantidade){
 
-  PONT aux = buscarID(l,id);;
+  PONT aux = buscarID(l,id);
   if(aux==NULL) return false;
-  int auxInt = aux->quantidade;
+  int auxQtt = aux->quantidade;
   
-  if(quantidade>auxInt || quantidade<=0) return false;
+  if(quantidade>auxQtt || quantidade<=0) return false;
   
   
-  if(auxInt-quantidade==0){
+  if(auxQtt-quantidade==0){
   	PONT esse = pegaAnterior(l,id);
   	esse->proxProd=aux->proxProd;
   	
   	free(aux);
   	
   	return true;
-  } 
-  
-  
+  }else{
 
-  return false;
+  	aux->quantidade-=quantidade;
+  	organizarLista(l);
+
+	return true;
+
+  }
+
 }
 
 
 bool atualizarValorDoProduto(PLISTA l, int id, int valor){
+	PONT aux = buscarID(l,id);
+	if(aux==NULL || valor<=0) return false;
 
-  /* COMPLETAR */
+	aux->valorUnitario=valor;
+	organizarLista(l);
 
-  return false;
+  return true;
 }
